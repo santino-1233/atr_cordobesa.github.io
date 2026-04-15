@@ -1,0 +1,1068 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Atr Cordobesa Kiosko - 24 Hs</title>
+
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;0,900;1,700&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet" />
+
+  <style>
+    /* =============================================
+       VARIABLES Y RESET GLOBAL
+    ============================================= */
+    :root {
+      --negro:       #0a0a0a;
+      --negro-suave: #141414;
+      --blanco:      #f5f0e8;
+      --blanco-dim:  #b8b0a0;
+      --dorado:      #c8903a;
+      --dorado-claro:#e5a94a;
+      --borde:       rgba(200, 144, 58, 0.2);
+      --font-titulo: 'Playfair Display', Georgia, serif;
+      --font-cuerpo: 'DM Sans', sans-serif;
+      --transicion:  0.35s ease;
+    }
+
+    *, *::before, *::after {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      background-color: var(--negro);
+      color: var(--blanco);
+      font-family: var(--font-cuerpo);
+      font-weight: 300;
+      line-height: 1.7;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    a {
+      color: inherit;
+      text-decoration: none;
+    }
+
+    img {
+      max-width: 100%;
+      display: block;
+    }
+
+    /* =============================================
+       ANIMACIONES DE ENTRADA (fade-in al scroll)
+    ============================================= */
+    .reveal {
+      opacity: 0;
+      transform: translateY(32px);
+      transition: opacity 0.7s ease, transform 0.7s ease;
+    }
+
+    .reveal.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    /* Retraso escalonado para hijos dentro de una sección */
+    .reveal-group .reveal:nth-child(1) { transition-delay: 0s; }
+    .reveal-group .reveal:nth-child(2) { transition-delay: 0.12s; }
+    .reveal-group .reveal:nth-child(3) { transition-delay: 0.24s; }
+    .reveal-group .reveal:nth-child(4) { transition-delay: 0.36s; }
+    .reveal-group .reveal:nth-child(5) { transition-delay: 0.48s; }
+    .reveal-group .reveal:nth-child(6) { transition-delay: 0.60s; }
+
+    /* =============================================
+       NAVBAR
+    ============================================= */
+    .navbar {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      z-index: 100;
+      padding: 20px 40px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: linear-gradient(to bottom, rgba(10,10,10,0.95) 0%, transparent 100%);
+      transition: background var(--transicion), padding var(--transicion);
+    }
+
+    /* El navbar se oscurece al hacer scroll */
+    .navbar.scrolled {
+      background: rgba(10, 10, 10, 0.97);
+      padding: 14px 40px;
+      border-bottom: 1px solid var(--borde);
+    }
+
+    .navbar-brand {
+      font-family: var(--font-titulo);
+      font-size: 1.1rem;
+      font-weight: 700;
+      letter-spacing: 0.04em;
+      color: var(--blanco);
+    }
+
+    .navbar-brand span {
+      color: var(--dorado);
+    }
+
+    .navbar-nav {
+      display: flex;
+      align-items: center;
+      gap: 32px;
+      list-style: none;
+    }
+
+    .navbar-nav a {
+      font-size: 0.85rem;
+      font-weight: 400;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--blanco-dim);
+      transition: color var(--transicion);
+    }
+
+    .navbar-nav a:hover {
+      color: var(--dorado);
+    }
+
+    /* Boton CTA en el nav */
+    .btn-nav {
+      font-size: 0.8rem !important;
+      font-weight: 500 !important;
+      letter-spacing: 0.14em !important;
+      text-transform: uppercase;
+      padding: 9px 22px;
+      border: 1px solid var(--dorado);
+      color: var(--dorado) !important;
+      border-radius: 2px;
+      transition: background var(--transicion), color var(--transicion) !important;
+    }
+
+    .btn-nav:hover {
+      background: var(--dorado);
+      color: var(--negro) !important;
+    }
+
+    /* Menu hamburguesa (mobile) */
+    .menu-toggle {
+      display: none;
+      flex-direction: column;
+      gap: 5px;
+      cursor: pointer;
+      background: none;
+      border: none;
+      padding: 4px;
+    }
+
+    .menu-toggle span {
+      display: block;
+      width: 24px;
+      height: 1.5px;
+      background: var(--blanco);
+      transition: transform var(--transicion), opacity var(--transicion);
+    }
+
+    .menu-toggle.open span:nth-child(1) { transform: translateY(6.5px) rotate(45deg); }
+    .menu-toggle.open span:nth-child(2) { opacity: 0; }
+    .menu-toggle.open span:nth-child(3) { transform: translateY(-6.5px) rotate(-45deg); }
+
+    /* =============================================
+       HERO
+    ============================================= */
+    .hero {
+      position: relative;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      overflow: hidden;
+      padding: 120px 24px 80px;
+    }
+
+    /* Fondo con textura de puntos */
+    .hero::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background:
+        radial-gradient(circle at 20% 50%, rgba(200, 144, 58, 0.07) 0%, transparent 55%),
+        radial-gradient(circle at 80% 20%, rgba(200, 144, 58, 0.05) 0%, transparent 45%);
+    }
+
+    /* Linea decorativa */
+    .hero::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 1px;
+      height: 80px;
+      background: linear-gradient(to bottom, var(--dorado), transparent);
+    }
+
+    .hero-inner {
+      position: relative;
+      max-width: 800px;
+    }
+
+    .hero-eyebrow {
+      font-size: 0.75rem;
+      font-weight: 500;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      color: var(--dorado);
+      margin-bottom: 20px;
+      opacity: 0;
+      animation: fadeUp 0.8s ease 0.2s forwards;
+    }
+
+    .hero-titulo {
+      font-family: var(--font-titulo);
+      font-size: clamp(3rem, 8vw, 6.5rem);
+      font-weight: 900;
+      line-height: 1.05;
+      color: var(--blanco);
+      margin-bottom: 12px;
+      opacity: 0;
+      animation: fadeUp 0.9s ease 0.4s forwards;
+    }
+
+    .hero-titulo em {
+      font-style: italic;
+      color: var(--dorado);
+    }
+
+    .hero-subtitulo {
+      font-size: clamp(1rem, 2.5vw, 1.35rem);
+      font-weight: 300;
+      color: var(--blanco-dim);
+      margin-bottom: 44px;
+      opacity: 0;
+      animation: fadeUp 0.9s ease 0.6s forwards;
+    }
+
+    .hero-acciones {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 20px;
+      flex-wrap: wrap;
+      opacity: 0;
+      animation: fadeUp 0.9s ease 0.8s forwards;
+    }
+
+    /* =============================================
+       BOTONES
+    ============================================= */
+    .btn-primario {
+      display: inline-block;
+      padding: 16px 40px;
+      background: var(--dorado);
+      color: var(--negro);
+      font-family: var(--font-cuerpo);
+      font-size: 0.82rem;
+      font-weight: 500;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      border: 1px solid var(--dorado);
+      border-radius: 2px;
+      cursor: pointer;
+      transition: background var(--transicion), color var(--transicion), transform var(--transicion);
+    }
+
+    .btn-primario:hover {
+      background: transparent;
+      color: var(--dorado);
+      transform: translateY(-2px);
+    }
+
+    .btn-secundario {
+      display: inline-block;
+      padding: 15px 38px;
+      background: transparent;
+      color: var(--blanco);
+      font-family: var(--font-cuerpo);
+      font-size: 0.82rem;
+      font-weight: 400;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      border: 1px solid rgba(245, 240, 232, 0.25);
+      border-radius: 2px;
+      cursor: pointer;
+      transition: border-color var(--transicion), color var(--transicion), transform var(--transicion);
+    }
+
+    .btn-secundario:hover {
+      border-color: var(--blanco);
+      transform: translateY(-2px);
+    }
+
+    /* =============================================
+       ANIMACION BASE
+    ============================================= */
+    @keyframes fadeUp {
+      from {
+        opacity: 0;
+        transform: translateY(28px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    /* =============================================
+       SECCIONES GENERALES
+    ============================================= */
+    section {
+      padding: 100px 24px;
+    }
+
+    .container {
+      max-width: 1100px;
+      margin: 0 auto;
+    }
+
+    .seccion-tag {
+      display: inline-block;
+      font-size: 0.7rem;
+      font-weight: 500;
+      letter-spacing: 0.24em;
+      text-transform: uppercase;
+      color: var(--dorado);
+      margin-bottom: 16px;
+    }
+
+    .seccion-titulo {
+      font-family: var(--font-titulo);
+      font-size: clamp(2rem, 5vw, 3.2rem);
+      font-weight: 700;
+      line-height: 1.15;
+      color: var(--blanco);
+      margin-bottom: 24px;
+    }
+
+    .seccion-titulo em {
+      font-style: italic;
+      color: var(--dorado);
+    }
+
+    .separador {
+      width: 48px;
+      height: 1px;
+      background: var(--dorado);
+      margin-bottom: 32px;
+    }
+
+    /* =============================================
+       SECCION: SOBRE NOSOTROS
+    ============================================= */
+    .sobre-nosotros {
+      background-color: var(--negro-suave);
+      border-top: 1px solid var(--borde);
+      border-bottom: 1px solid var(--borde);
+    }
+
+    .sobre-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 80px;
+      align-items: center;
+    }
+
+    .sobre-texto p {
+      color: var(--blanco-dim);
+      margin-bottom: 18px;
+      font-size: 1rem;
+    }
+
+    .sobre-texto p:last-child {
+      margin-bottom: 0;
+    }
+
+    /* Panel visual (reemplazable por foto real) */
+    .sobre-visual {
+      position: relative;
+      height: 420px;
+      border: 1px solid var(--borde);
+      border-radius: 3px;
+      overflow: hidden;
+      background: linear-gradient(135deg, #1a1a1a 0%, #0d0d0d 100%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .sobre-visual-texto {
+      text-align: center;
+      color: var(--borde);
+    }
+
+    .sobre-visual-texto .icono {
+      font-size: 3rem;
+      display: block;
+      margin-bottom: 12px;
+      color: rgba(200, 144, 58, 0.15);
+    }
+
+    .sobre-visual-texto p {
+      font-size: 0.75rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: rgba(200, 144, 58, 0.3);
+    }
+
+    .sobre-visual::before {
+      content: '';
+      position: absolute;
+      top: -1px;
+      left: 30px;
+      width: 80px;
+      height: 3px;
+      background: var(--dorado);
+    }
+
+    /* =============================================
+       SECCION: QUE OFRECEMOS
+    ============================================= */
+    .ofrecemos {
+      text-align: center;
+    }
+
+    .ofrecemos .seccion-titulo,
+    .ofrecemos .seccion-tag {
+      display: block;
+    }
+
+    .ofrecemos .separador {
+      margin: 0 auto 48px;
+    }
+
+    .productos-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 2px;
+      margin-top: 60px;
+    }
+
+    .producto-item {
+      background: var(--negro-suave);
+      padding: 40px 28px;
+      border: 1px solid var(--borde);
+      text-align: left;
+      transition: background var(--transicion), border-color var(--transicion);
+      cursor: default;
+    }
+
+    .producto-item:hover {
+      background: #1c1c1c;
+      border-color: rgba(200, 144, 58, 0.45);
+    }
+
+    .producto-numero {
+      font-family: var(--font-titulo);
+      font-size: 2.4rem;
+      font-weight: 900;
+      color: rgba(200, 144, 58, 0.15);
+      line-height: 1;
+      margin-bottom: 16px;
+      display: block;
+    }
+
+    .producto-nombre {
+      font-family: var(--font-titulo);
+      font-size: 1.15rem;
+      font-weight: 700;
+      color: var(--blanco);
+      margin-bottom: 10px;
+    }
+
+    .producto-desc {
+      font-size: 0.88rem;
+      color: var(--blanco-dim);
+      line-height: 1.6;
+    }
+
+    /* =============================================
+       SECCION: HORARIOS (BANNER)
+    ============================================= */
+    .banner-horario {
+      padding: 60px 24px;
+      background: var(--dorado);
+      text-align: center;
+    }
+
+    .banner-horario p {
+      font-family: var(--font-titulo);
+      font-size: clamp(1.4rem, 4vw, 2.2rem);
+      font-weight: 700;
+      color: var(--negro);
+      letter-spacing: 0.02em;
+    }
+
+    .banner-horario span {
+      font-style: italic;
+    }
+
+    /* =============================================
+       SECCION: CONTACTO
+    ============================================= */
+    .contacto {
+      background: var(--negro-suave);
+      border-top: 1px solid var(--borde);
+    }
+
+    .contacto-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 80px;
+      align-items: start;
+    }
+
+    .contacto-info p {
+      color: var(--blanco-dim);
+      margin-bottom: 40px;
+      font-size: 1rem;
+    }
+
+    .contacto-links {
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+
+    .contacto-link {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      padding: 18px 22px;
+      border: 1px solid var(--borde);
+      border-radius: 2px;
+      color: var(--blanco-dim);
+      font-size: 0.9rem;
+      transition: border-color var(--transicion), color var(--transicion), transform var(--transicion);
+      background: rgba(255,255,255,0.02);
+    }
+
+    .contacto-link:hover {
+      border-color: var(--dorado);
+      color: var(--dorado);
+      transform: translateX(4px);
+    }
+
+    .contacto-link-icono {
+      font-size: 1.2rem;
+      flex-shrink: 0;
+    }
+
+    .contacto-link-texto strong {
+      display: block;
+      font-weight: 500;
+      color: var(--blanco);
+      margin-bottom: 2px;
+      font-size: 0.85rem;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+    }
+
+    /* Panel mapa (placeholder para reemplazar con iframe real) */
+    .contacto-mapa {
+      height: 340px;
+      border: 1px solid var(--borde);
+      border-radius: 3px;
+      overflow: hidden;
+      background: #111;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: rgba(200, 144, 58, 0.3);
+      font-size: 0.75rem;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      position: relative;
+    }
+
+    .contacto-mapa::before {
+      content: '';
+      position: absolute;
+      top: -1px;
+      left: 30px;
+      width: 60px;
+      height: 3px;
+      background: var(--dorado);
+    }
+
+    /* =============================================
+       FOOTER
+    ============================================= */
+    .footer {
+      padding: 40px 24px;
+      border-top: 1px solid var(--borde);
+      text-align: center;
+    }
+
+    .footer-marca {
+      font-family: var(--font-titulo);
+      font-size: 1.3rem;
+      font-weight: 700;
+      color: var(--blanco);
+      margin-bottom: 8px;
+    }
+
+    .footer-marca span {
+      color: var(--dorado);
+    }
+
+    .footer-sub {
+      font-size: 0.78rem;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--blanco-dim);
+      margin-bottom: 24px;
+    }
+
+    .footer-links {
+      display: flex;
+      justify-content: center;
+      gap: 28px;
+      list-style: none;
+      margin-bottom: 28px;
+    }
+
+    .footer-links a {
+      font-size: 0.78rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--blanco-dim);
+      transition: color var(--transicion);
+    }
+
+    .footer-links a:hover {
+      color: var(--dorado);
+    }
+
+    .footer-copy {
+      font-size: 0.72rem;
+      color: rgba(184, 176, 160, 0.4);
+      letter-spacing: 0.05em;
+    }
+
+    /* =============================================
+       RESPONSIVE: TABLET Y MOBILE
+    ============================================= */
+    @media (max-width: 900px) {
+      .sobre-grid,
+      .contacto-grid {
+        grid-template-columns: 1fr;
+        gap: 48px;
+      }
+
+      .sobre-visual {
+        height: 260px;
+      }
+    }
+
+    @media (max-width: 640px) {
+      .navbar {
+        padding: 18px 20px;
+      }
+
+      .navbar.scrolled {
+        padding: 14px 20px;
+      }
+
+      .navbar-nav {
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100vh;
+        background: var(--negro);
+        flex-direction: column;
+        justify-content: center;
+        gap: 36px;
+        z-index: 99;
+      }
+
+      .navbar-nav.open {
+        display: flex;
+      }
+
+      .navbar-nav a {
+        font-size: 1.1rem;
+      }
+
+      .menu-toggle {
+        display: flex;
+        position: relative;
+        z-index: 101;
+      }
+
+      section {
+        padding: 72px 20px;
+      }
+
+      .hero-acciones {
+        flex-direction: column;
+        align-items: stretch;
+      }
+
+      .btn-primario,
+      .btn-secundario {
+        text-align: center;
+      }
+
+      .productos-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .contacto-mapa {
+        height: 240px;
+      }
+
+      .footer-links {
+        flex-wrap: wrap;
+        gap: 16px;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- =============================================
+       NAVBAR
+  ============================================= -->
+  <nav class="navbar" id="navbar">
+    <a href="index.html" class="navbar-brand">
+      Atr <span>Cordobesa</span>
+    </a>
+
+    <!-- Hamburguesa (mobile) -->
+    <button class="menu-toggle" id="menuToggle" aria-label="Abrir menú">
+      <span></span>
+      <span></span>
+      <span></span>
+    </button>
+
+    <ul class="navbar-nav" id="navLinks">
+      <li><a href="#sobre-nosotros">Sobre nosotros</a></li>
+      <li><a href="#ofrecemos">Productos</a></li>
+      <li><a href="#contacto">Contacto</a></li>
+      <li><a href="menu.html" class="btn-nav">Ver menu</a></li>
+    </ul>
+  </nav>
+
+
+  <!-- =============================================
+       HERO
+  ============================================= -->
+  <section class="hero" id="inicio">
+    <div class="hero-inner">
+      <p class="hero-eyebrow">Kiosko 24 horas - Quilmes</p>
+
+      <h1 class="hero-titulo">
+        Atr <em>Cordobesa</em>
+      </h1>
+
+      <p class="hero-subtitulo">
+        Siempre abiertos. Para el antojo de las tres de la tarde<br>
+        y el de las tres de la manana.
+      </p>
+
+      <div class="hero-acciones">
+        <a href="menu.html" class="btn-primario">Ver el menu</a>
+        <a href="#sobre-nosotros" class="btn-secundario">Conocernos</a>
+      </div>
+    </div>
+  </section>
+
+
+  <!-- =============================================
+       SOBRE NOSOTROS
+  ============================================= -->
+  <section class="sobre-nosotros" id="sobre-nosotros">
+    <div class="container">
+      <div class="sobre-grid">
+
+        <!-- Texto -->
+        <div class="sobre-texto reveal">
+          <span class="seccion-tag">Quienes somos</span>
+          <h2 class="seccion-titulo">Un kiosko de <em>barrio</em> con todo lo que necesitas</h2>
+          <div class="separador"></div>
+
+          <p>
+            Atr Cordobesa nacio con una idea simple: que nunca te falte nada,
+            a cualquier hora. Somos un kiosko 24 horas ubicado en Quilmes,
+            atendido con la calidez de siempre y la variedad que el barrio merece.
+          </p>
+          <p>
+            Desde que abrimos, fuimos el punto de encuentro para el que sale a
+            trabajar de madrugada, el que necesita algo para la tarde con amigos
+            o el que simplemente quiere algo rico a cualquier hora.
+          </p>
+          <p>
+            Tenemos de todo: golosinas, bebidas, comidas rapidas, articulos de
+            almacen y mucho mas. Si no lo tenes en casa, lo tenes aca.
+          </p>
+        </div>
+
+        <!-- Panel visual: reemplazar con foto real del local -->
+        <div class="sobre-visual reveal">
+          <div class="sobre-visual-texto">
+            <span class="icono">&#9632;</span>
+            <p>Foto del local</p>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+
+  <!-- =============================================
+       QUE OFRECEMOS
+  ============================================= -->
+  <section class="ofrecemos" id="ofrecemos">
+    <div class="container">
+      <span class="seccion-tag reveal">Lo que vas a encontrar</span>
+      <h2 class="seccion-titulo reveal">Todo lo que necesitas, <em>siempre disponible</em></h2>
+      <div class="separador reveal"></div>
+
+      <div class="productos-grid reveal-group">
+
+        <div class="producto-item reveal">
+          <span class="producto-numero">01</span>
+          <p class="producto-nombre">Golosinas y snacks</p>
+          <p class="producto-desc">
+            Chocolates, caramelos, chicles, papas fritas y todo lo que se te
+            antoje. Marcas conocidas y opciones para todos los gustos.
+          </p>
+        </div>
+
+        <div class="producto-item reveal">
+          <span class="producto-numero">02</span>
+          <p class="producto-nombre">Bebidas</p>
+          <p class="producto-desc">
+            Gaseosas, aguas, jugos, energizantes, cervezas y vinos. Frias
+            y a temperatura ambiente. Del tamano individual al familiar.
+          </p>
+        </div>
+
+        <div class="producto-item reveal">
+          <span class="producto-numero">03</span>
+          <p class="producto-nombre">Comidas rapidas</p>
+          <p class="producto-desc">
+            Sandwiches, medialunas, facturas y otras opciones para saciar
+            el hambre a cualquier hora del dia o la noche.
+          </p>
+        </div>
+
+        <div class="producto-item reveal">
+          <span class="producto-numero">04</span>
+          <p class="producto-nombre">Almacen basico</p>
+          <p class="producto-desc">
+            Fideos, arroz, aceite, sal, conservas y otros productos esenciales
+            para cuando el super ya cerro y te falta algo para cocinar.
+          </p>
+        </div>
+
+        <div class="producto-item reveal">
+          <span class="producto-numero">05</span>
+          <p class="producto-nombre">Cigarrillos y tabaco</p>
+          <p class="producto-desc">
+            Todas las marcas principales. Atinamos a tener siempre stock
+            para que no te quedes sin lo que buscas.
+          </p>
+        </div>
+
+        <div class="producto-item reveal">
+          <span class="producto-numero">06</span>
+          <p class="producto-nombre">Articulos varios</p>
+          <p class="producto-desc">
+            Pilas, cargadores, elementos de limpieza, higiene personal y otros
+            articulos de primera necesidad para el dia a dia.
+          </p>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+
+  <!-- =============================================
+       BANNER HORARIO
+  ============================================= -->
+  <div class="banner-horario reveal">
+    <p>Abierto <span>las 24 horas</span>, los 365 dias del ano.</p>
+  </div>
+
+
+  <!-- =============================================
+       CONTACTO
+  ============================================= -->
+  <section class="contacto" id="contacto">
+    <div class="container">
+      <div class="contacto-grid">
+
+        <!-- Info -->
+        <div>
+          <span class="seccion-tag reveal">Donde encontrarnos</span>
+          <h2 class="seccion-titulo reveal">Veni a <em>visitarnos</em></h2>
+          <div class="separador reveal"></div>
+          <p class="reveal">
+            Estamos en Quilmes, siempre abiertos. Si tenes alguna duda,
+            escribinos por WhatsApp o seguinos en Facebook para ver
+            novedades y promociones.
+          </p>
+
+          <div class="contacto-links reveal">
+
+            <!-- WhatsApp (numero ficticio para la demo) -->
+            <a
+              href="https://wa.me/5491100000000"
+              target="_blank"
+              rel="noopener noreferrer"
+              class="contacto-link"
+            >
+              <span class="contacto-link-icono">&#9993;</span>
+              <div class="contacto-link-texto">
+                <strong>WhatsApp</strong>
+                Escribinos directo
+              </div>
+            </a>
+
+            <!-- Google Maps -->
+            <a
+              href="https://www.google.com/maps/place/Atr+Cordobesa+Kiosko+24+Hs"
+              target="_blank"
+              rel="noopener noreferrer"
+              class="contacto-link"
+            >
+              <span class="contacto-link-icono">&#9679;</span>
+              <div class="contacto-link-texto">
+                <strong>Como llegar</strong>
+                Ver en Google Maps
+              </div>
+            </a>
+
+            <!-- Facebook -->
+            <a
+              href="https://www.facebook.com/ATR-Cordobesa-360431067987620/"
+              target="_blank"
+              rel="noopener noreferrer"
+              class="contacto-link"
+            >
+              <span class="contacto-link-icono">&#9633;</span>
+              <div class="contacto-link-texto">
+                <strong>Facebook</strong>
+                Seguinos para ver novedades
+              </div>
+            </a>
+
+          </div>
+        </div>
+
+        <!-- Mapa placeholder (reemplazar por iframe de Google Maps real) -->
+        <div class="contacto-mapa reveal">
+          Mapa del local
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+
+  <!-- =============================================
+       FOOTER
+  ============================================= -->
+  <footer class="footer">
+    <p class="footer-marca">Atr <span>Cordobesa</span></p>
+    <p class="footer-sub">Kiosko 24 Hs - Quilmes</p>
+
+    <ul class="footer-links">
+      <li><a href="#inicio">Inicio</a></li>
+      <li><a href="menu.html">Menu</a></li>
+      <li><a href="#contacto">Contacto</a></li>
+      <li>
+        <a
+          href="https://www.facebook.com/ATR-Cordobesa-360431067987620/"
+          target="_blank"
+          rel="noopener noreferrer"
+        >Facebook</a>
+      </li>
+    </ul>
+
+    <p class="footer-copy">Demo web &mdash; Todos los derechos reservados</p>
+  </footer>
+
+
+  <!-- =============================================
+       JAVASCRIPT
+  ============================================= -->
+  <script>
+    // ----- Navbar: agrega clase "scrolled" al hacer scroll -----
+    const navbar = document.getElementById('navbar');
+
+    window.addEventListener('scroll', () => {
+      if (window.scrollY > 60) {
+        navbar.classList.add('scrolled');
+      } else {
+        navbar.classList.remove('scrolled');
+      }
+    });
+
+
+    // ----- Menu hamburguesa (mobile) -----
+    const menuToggle = document.getElementById('menuToggle');
+    const navLinks   = document.getElementById('navLinks');
+
+    menuToggle.addEventListener('click', () => {
+      menuToggle.classList.toggle('open');
+      navLinks.classList.toggle('open');
+    });
+
+    // Cierra el menu al hacer clic en un link
+    navLinks.querySelectorAll('a').forEach(link => {
+      link.addEventListener('click', () => {
+        menuToggle.classList.remove('open');
+        navLinks.classList.remove('open');
+      });
+    });
+
+
+    // ----- Reveal al hacer scroll (IntersectionObserver) -----
+    const revealEls = document.querySelectorAll('.reveal');
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add('visible');
+            // Una vez visible, deja de observar para no repetir
+            observer.unobserve(entry.target);
+          }
+        });
+      },
+      {
+        threshold: 0.12,       // Se activa cuando el 12% del elemento es visible
+        rootMargin: '0px 0px -40px 0px'
+      }
+    );
+
+    revealEls.forEach(el => observer.observe(el));
+  </script>
+
+</body>
+</html>
