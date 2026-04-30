@@ -1,0 +1,622 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Atr Cordobesa Kiosko - Abierto 24 horas. Todo lo que necesitas en cualquier momento." />
+  <title>Atr Cordobesa Kiosko</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;0,900;1,700&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --bg:        #0e0d0b;
+      --surface:   #181714;
+      --surface2:  #222019;
+      --cream:     #f0ead9;
+      --cream-dim: #b8b0a0;
+      --red:       #c9372a;
+      --red-l:     #e04233;
+      --gold:      #c9a45a;
+      --gold-dim:  rgba(201,164,90,0.35);
+      --border:    rgba(255,255,255,0.07);
+      --border2:   rgba(255,255,255,0.13);
+      --fd: 'Playfair Display', Georgia, serif;
+      --fb: 'DM Sans', system-ui, sans-serif;
+      --nav-h: 70px;
+      --r: 10px;
+      --ease: 0.3s cubic-bezier(0.4,0,0.2,1);
+    }
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+    html{scroll-behavior:smooth}
+    body{font-family:var(--fb);background:var(--bg);color:var(--cream);overflow-x:hidden;line-height:1.65}
+    img{display:block;max-width:100%}
+    a{text-decoration:none;color:inherit}
+
+    /* NAVBAR */
+    #navbar{position:fixed;top:0;left:0;right:0;z-index:1000;height:var(--nav-h);display:flex;align-items:center;justify-content:space-between;padding:0 clamp(20px,5vw,64px);background:rgba(14,13,11,0.85);backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px);border-bottom:1px solid transparent;transition:border-color var(--ease)}
+    #navbar.scrolled{border-color:var(--border)}
+    .nav-logo{font-family:var(--fd);font-size:clamp(.95rem,2.5vw,1.15rem);font-weight:700;color:var(--cream)}
+    .nav-logo span{color:var(--gold);font-style:italic}
+    .nav-links{display:flex;gap:6px;align-items:center}
+    .nav-btn{font-family:var(--fb);font-size:.78rem;font-weight:600;letter-spacing:.07em;text-transform:uppercase;padding:9px 20px;border-radius:6px;border:1.5px solid transparent;cursor:pointer;transition:background var(--ease),color var(--ease),border-color var(--ease),transform .15s}
+    .nav-btn:hover{transform:translateY(-1px)}
+    .nav-btn--outline{color:var(--cream-dim);border-color:var(--border2);background:transparent}
+    .nav-btn--outline:hover{color:var(--cream);border-color:rgba(255,255,255,.28)}
+    .nav-btn--red{color:#fff;background:var(--red);border-color:var(--red)}
+    .nav-btn--red:hover{background:var(--red-l);border-color:var(--red-l)}
+    .nav-hamburger{display:none;flex-direction:column;gap:5px;cursor:pointer;padding:4px}
+    .nav-hamburger span{display:block;width:24px;height:2px;background:var(--cream);border-radius:2px;transition:transform var(--ease),opacity var(--ease)}
+    .nav-mobile-menu{display:none;position:fixed;top:var(--nav-h);left:0;right:0;background:rgba(14,13,11,.97);backdrop-filter:blur(20px);padding:20px clamp(20px,5vw,64px);flex-direction:column;gap:10px;z-index:999;border-bottom:1px solid var(--border)}
+    .nav-mobile-menu.open{display:flex}
+    .nav-mobile-menu .nav-btn{width:100%;text-align:center;padding:13px}
+
+    /* REVEAL */
+    .reveal{opacity:0;transform:translateY(30px);transition:opacity .7s ease,transform .7s ease}
+    .reveal.visible{opacity:1;transform:translateY(0)}
+    .reveal-left{opacity:0;transform:translateX(-30px);transition:opacity .7s ease,transform .7s ease}
+    .reveal-left.visible{opacity:1;transform:translateX(0)}
+
+    /* HERO */
+    #hero{min-height:100vh;padding-top:var(--nav-h);display:flex;align-items:center;justify-content:center;position:relative;overflow:hidden;background:var(--bg)}
+    .hero-glow-a{position:absolute;top:-5%;right:-10%;width:60vw;height:60vw;background:radial-gradient(circle,rgba(201,55,42,.15) 0%,transparent 65%);pointer-events:none}
+    .hero-glow-b{position:absolute;bottom:-10%;left:-8%;width:50vw;height:50vw;background:radial-gradient(circle,rgba(201,164,90,.09) 0%,transparent 65%);pointer-events:none}
+    .hero-inner{position:relative;z-index:1;text-align:center;padding:clamp(40px,8vw,100px) clamp(20px,6vw,80px);max-width:900px}
+    .hero-badge{display:inline-flex;align-items:center;gap:9px;font-size:.7rem;font-weight:600;letter-spacing:.2em;text-transform:uppercase;color:var(--gold);border:1px solid var(--gold-dim);padding:7px 20px;border-radius:100px;margin-bottom:36px;animation:fadeDown .7s ease both}
+    .badge-dot{width:6px;height:6px;background:var(--gold);border-radius:50%;animation:blink 2.2s ease-in-out infinite}
+    @keyframes blink{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.4;transform:scale(.65)}}
+    .hero-title{font-family:var(--fd);font-size:clamp(3rem,11vw,8rem);font-weight:900;line-height:.92;letter-spacing:-.025em;color:var(--cream);margin-bottom:28px;animation:fadeDown .7s .12s ease both}
+    .hero-title .acc{color:var(--red);font-style:italic}
+    .hero-sub-line{display:block;font-family:var(--fb);font-size:.38em;font-weight:500;letter-spacing:.16em;text-transform:uppercase;color:var(--cream-dim);font-style:normal;margin-top:14px}
+    .hero-sub{font-size:clamp(1rem,2.3vw,1.15rem);font-weight:300;color:var(--cream-dim);margin-bottom:48px;animation:fadeDown .7s .24s ease both}
+    .hero-actions{display:flex;gap:14px;justify-content:center;flex-wrap:wrap;animation:fadeDown .7s .36s ease both}
+    .btn{display:inline-flex;align-items:center;gap:8px;font-family:var(--fb);font-size:.83rem;font-weight:600;letter-spacing:.08em;text-transform:uppercase;padding:15px 32px;border-radius:8px;cursor:pointer;border:1.5px solid transparent;transition:background var(--ease),color var(--ease),border-color var(--ease),transform .15s,box-shadow var(--ease)}
+    .btn:hover{transform:translateY(-2px)}
+    .btn:active{transform:translateY(0)}
+    .btn--red{background:var(--red);color:#fff;border-color:var(--red)}
+    .btn--red:hover{background:var(--red-l);border-color:var(--red-l);box-shadow:0 8px 28px rgba(201,55,42,.4)}
+    .btn--ghost{background:transparent;color:var(--cream);border-color:var(--border2)}
+    .btn--ghost:hover{border-color:rgba(255,255,255,.28);background:rgba(255,255,255,.05)}
+    .hero-scroll{position:absolute;bottom:36px;left:50%;transform:translateX(-50%);display:flex;flex-direction:column;align-items:center;gap:8px;animation:fadeDown 1s 1.2s ease both}
+    .hero-scroll-label{font-size:.62rem;font-weight:600;letter-spacing:.18em;text-transform:uppercase;color:rgba(255,255,255,.28)}
+    .hero-scroll-line{width:1px;height:40px;background:linear-gradient(to bottom,rgba(255,255,255,.4),transparent);animation:scrollPulse 1.8s ease-in-out infinite}
+
+    /* SECTION */
+    section{padding:clamp(70px,9vw,120px) clamp(20px,6vw,80px)}
+    .section-label{font-size:.67rem;font-weight:600;letter-spacing:.22em;text-transform:uppercase;color:var(--gold);margin-bottom:12px}
+    .section-title{font-family:var(--fd);font-size:clamp(2.2rem,5.5vw,3.8rem);font-weight:700;line-height:1.05;color:var(--cream)}
+    .section-title em{color:var(--red);font-style:italic}
+    .section-rule{width:44px;height:2px;background:var(--red);margin-top:18px;border-radius:2px}
+
+    /* PRODUCTOS */
+    #productos{background:var(--surface)}
+    .productos-header{display:flex;align-items:flex-end;justify-content:space-between;flex-wrap:wrap;gap:20px;margin-bottom:52px}
+    .productos-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,230px),1fr));gap:14px}
+    .product-card{background:var(--surface2);border:1px solid var(--border);border-radius:var(--r);padding:30px 24px;position:relative;overflow:hidden;transition:border-color var(--ease),transform var(--ease),box-shadow var(--ease)}
+    .product-card::after{content:'';position:absolute;bottom:0;left:0;right:0;height:2px;background:linear-gradient(to right,var(--red),var(--gold));transform:scaleX(0);transform-origin:left;transition:transform var(--ease)}
+    .product-card:hover{border-color:var(--border2);transform:translateY(-4px);box-shadow:0 16px 40px rgba(0,0,0,.45)}
+    .product-card:hover::after{transform:scaleX(1)}
+    .product-icon{margin-bottom:16px}
+    .product-name{font-family:var(--fd);font-size:1.15rem;font-weight:700;color:var(--cream);margin-bottom:7px}
+    .product-desc{font-size:.87rem;color:var(--cream-dim);line-height:1.6}
+
+    /* MENU */
+    #menu{background:var(--bg);position:relative;overflow:hidden}
+    .menu-glow{position:absolute;top:-15%;left:50%;transform:translateX(-50%);width:80vw;height:80vw;background:radial-gradient(circle,rgba(201,164,90,.04) 0%,transparent 60%);pointer-events:none}
+    .menu-layout{display:grid;grid-template-columns:300px 1fr;gap:clamp(36px,6vw,80px);align-items:start;position:relative;z-index:1}
+    .menu-sidebar{position:sticky;top:calc(var(--nav-h) + 28px)}
+    .menu-hint{margin-top:24px;padding:18px 20px;background:var(--surface);border:1px solid var(--border);border-left:3px solid var(--gold);border-radius:var(--r);font-size:.87rem;color:var(--cream-dim);line-height:1.65}
+    .menu-hint strong{display:block;color:var(--cream);font-size:.72rem;font-weight:600;letter-spacing:.1em;text-transform:uppercase;margin-bottom:6px}
+
+    /* MENU CARDS */
+    .menu-list{display:flex;flex-direction:column;gap:10px}
+    .menu-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);overflow:hidden;transition:border-color var(--ease)}
+    .menu-card.open{border-color:rgba(201,164,90,.3)}
+    .menu-card-btn{width:100%;display:flex;align-items:center;justify-content:space-between;padding:20px 24px;background:none;border:none;cursor:pointer;gap:14px;text-align:left;transition:background var(--ease);color:inherit}
+    .menu-card-btn:hover{background:rgba(255,255,255,.025)}
+    .menu-card-btn:focus-visible{outline:2px solid var(--gold);outline-offset:-2px}
+    .menu-card-num{font-family:var(--fd);font-size:.88rem;font-weight:700;font-style:italic;color:var(--red);opacity:.65;flex-shrink:0;width:26px}
+    .menu-card-name{flex:1;font-family:var(--fd);font-size:1.1rem;font-weight:700;color:var(--cream);line-height:1.25}
+    .menu-card-icon{width:30px;height:30px;flex-shrink:0;background:var(--surface2);border-radius:50%;display:flex;align-items:center;justify-content:center;color:var(--cream-dim);transition:background var(--ease),color var(--ease),transform var(--ease)}
+    .menu-card.open .menu-card-icon{background:var(--red);color:#fff;transform:rotate(180deg)}
+    .menu-card-body{max-height:0;overflow:hidden;transition:max-height .42s cubic-bezier(.4,0,.2,1)}
+    .menu-card.open .menu-card-body{max-height:220px}
+    .menu-card-content{display:flex;align-items:center;justify-content:space-between;gap:24px;padding:18px 24px 22px;border-top:1px solid var(--border)}
+    .menu-card-desc{flex:1;font-size:.91rem;color:var(--cream-dim);line-height:1.65}
+    .menu-card-wa{flex-shrink:0;display:inline-flex;align-items:center;gap:8px;background:#25D366;color:#fff;font-family:var(--fb);font-size:.78rem;font-weight:600;letter-spacing:.06em;text-transform:uppercase;padding:12px 22px;border-radius:8px;white-space:nowrap;transition:background var(--ease),transform .15s,box-shadow var(--ease)}
+    .menu-card-wa:hover{background:#1aab52;transform:translateY(-1px);box-shadow:0 6px 20px rgba(37,211,102,.35)}
+    .menu-card-wa:active{transform:translateY(0)}
+
+    /* SOBRE */
+    #sobre{background:var(--surface)}
+    .sobre-inner{display:grid;grid-template-columns:1fr 1fr;gap:clamp(40px,6vw,80px);align-items:center}
+    .sobre-text{margin-top:18px;font-size:1rem;font-weight:300;color:var(--cream-dim);line-height:1.8}
+    .sobre-cta{margin-top:34px}
+    .sobre-stats{display:flex;flex-direction:column;gap:20px}
+    .stat-item{background:var(--surface2);border:1px solid var(--border);border-left:3px solid var(--red);border-radius:var(--r);padding:22px 26px}
+    .stat-num{font-family:var(--fd);font-size:clamp(2rem,5vw,3rem);font-weight:900;line-height:1;color:var(--cream)}
+    .stat-label{font-size:.78rem;color:var(--cream-dim);margin-top:4px;text-transform:uppercase;letter-spacing:.1em}
+
+    /* CONTACTO */
+    #contacto{background:var(--bg)}
+    .contacto-header{margin-bottom:48px}
+    .contacto-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,210px),1fr));gap:12px}
+    .contact-card{display:flex;align-items:center;gap:15px;padding:20px 18px;border-radius:var(--r);border:1.5px solid transparent;transition:transform var(--ease),box-shadow var(--ease),border-color var(--ease);cursor:pointer}
+    .contact-card:hover{transform:translateY(-3px);box-shadow:0 12px 32px rgba(0,0,0,.38)}
+    .contact-card:active{transform:translateY(0)}
+    .contact-card--whatsapp{background:#25D366;color:#fff}
+    .contact-card--whatsapp:hover{border-color:#1aab52}
+    .contact-card--facebook{background:#1877F2;color:#fff}
+    .contact-card--facebook:hover{border-color:#0d5dbe}
+    .contact-card--email{background:var(--surface);color:var(--cream);border-color:var(--border)}
+    .contact-card--email:hover{border-color:var(--border2)}
+    .contact-icon{font-size:1.4rem;flex-shrink:0}
+    .contact-label{font-size:.68rem;font-weight:600;letter-spacing:.12em;text-transform:uppercase;opacity:.7;margin-bottom:2px}
+    .contact-value{font-family:var(--fd);font-size:.95rem;font-weight:700;word-break:break-all}
+
+    .contacto-bottom{margin-top:32px;display:grid;grid-template-columns:1fr 1fr;gap:18px;align-items:start}
+    .mapa-wrap{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);overflow:hidden}
+    .mapa-header{display:flex;align-items:center;gap:8px;padding:13px 17px;border-bottom:1px solid var(--border)}
+    .mapa-header span{font-size:.8rem;font-weight:600;letter-spacing:.05em;text-transform:uppercase;color:var(--cream-dim)}
+    .mapa-iframe-wrap{width:100%;height:290px;position:relative}
+    .mapa-iframe-wrap iframe{position:absolute;inset:0;width:100%;height:100%;filter:grayscale(25%) brightness(.9)}
+    .mapa-link{display:flex;align-items:center;gap:6px;padding:11px 17px;font-size:.75rem;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--gold);border-top:1px solid var(--border);transition:background var(--ease),color var(--ease)}
+    .mapa-link:hover{background:var(--red);color:#fff}
+
+    .wa-form-wrap{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:26px 24px;display:flex;flex-direction:column;gap:16px}
+    .wa-form-header{display:flex;align-items:flex-start;gap:11px}
+    .wa-form-header svg{flex-shrink:0;margin-top:2px}
+    .wa-form-title{font-family:var(--fd);font-size:1.05rem;font-weight:700;color:var(--cream)}
+    .wa-form-sub{font-size:.81rem;color:var(--cream-dim);margin-top:3px}
+    .wa-field-group{display:flex;flex-direction:column;gap:5px}
+    .wa-label{font-size:.7rem;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--cream-dim)}
+    .wa-input{font-family:var(--fb);font-size:.93rem;color:var(--cream);background:var(--surface2);border:1.5px solid var(--border);border-radius:8px;padding:11px 14px;outline:none;transition:border-color var(--ease),box-shadow var(--ease);width:100%;resize:none}
+    .wa-input::placeholder{color:rgba(255,255,255,.22)}
+    .wa-input:focus{border-color:#25D366;box-shadow:0 0 0 3px rgba(37,211,102,.14)}
+    .wa-textarea{line-height:1.55}
+    .wa-preview{background:rgba(37,211,102,.07);border:1px solid rgba(37,211,102,.2);border-radius:8px;padding:12px 14px}
+    .wa-preview-label{font-size:.67rem;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:#25D366;margin-bottom:5px}
+    .wa-preview-text{font-size:.87rem;color:rgba(37,211,102,.82);line-height:1.5}
+    .wa-preview-text em{font-style:normal;font-weight:600;color:#4ade80}
+    .wa-submit{display:flex;align-items:center;justify-content:center;gap:9px;width:100%;padding:14px;background:#25D366;color:#fff;font-family:var(--fb);font-size:.86rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;border:none;border-radius:8px;cursor:pointer;transition:background var(--ease),transform .15s,box-shadow var(--ease)}
+    .wa-submit:hover{background:#1aab52;transform:translateY(-2px);box-shadow:0 8px 24px rgba(37,211,102,.35)}
+    .wa-submit:active{transform:translateY(0)}
+    .wa-form-error{font-size:.81rem;color:var(--red);font-weight:500;min-height:18px}
+
+    /* FOOTER */
+    footer{background:#070706;color:rgba(255,255,255,.28);text-align:center;padding:30px 20px;font-size:.8rem;letter-spacing:.06em;border-top:1px solid var(--border)}
+    footer strong{color:var(--cream)}
+    .footer-gold{color:var(--gold)}
+
+    /* WA FLOAT */
+    .wa-float{position:fixed;bottom:28px;right:28px;z-index:900;display:flex;align-items:center;gap:0;text-decoration:none;animation:waEntry .5s 1.4s cubic-bezier(.34,1.56,.64,1) both}
+    .wa-float-tip{background:var(--surface);color:var(--cream);border:1px solid var(--border2);font-size:.74rem;font-weight:600;letter-spacing:.08em;text-transform:uppercase;padding:8px 13px;border-radius:6px 0 0 6px;white-space:nowrap;opacity:0;transform:translateX(10px);pointer-events:none;transition:opacity .25s,transform .25s}
+    .wa-float:hover .wa-float-tip{opacity:1;transform:translateX(0)}
+    .wa-float-btn{width:56px;height:56px;border-radius:50%;background:#25D366;display:flex;align-items:center;justify-content:center;box-shadow:0 4px 18px rgba(37,211,102,.45);transition:transform .2s,box-shadow .2s;flex-shrink:0;position:relative}
+    .wa-float:hover .wa-float-btn{transform:scale(1.08);box-shadow:0 8px 28px rgba(37,211,102,.55)}
+    .wa-float:active .wa-float-btn{transform:scale(.95)}
+    .wa-float-btn::before{content:'';position:absolute;inset:-5px;border-radius:50%;border:2px solid rgba(37,211,102,.38);animation:waPulse 2.4s ease-out infinite}
+
+    /* RESPONSIVE */
+    @media(max-width:900px){
+      .menu-layout{grid-template-columns:1fr}
+      .menu-sidebar{position:static}
+    }
+    @media(max-width:768px){
+      .nav-links{display:none}
+      .nav-hamburger{display:flex}
+      .sobre-inner{grid-template-columns:1fr}
+      .sobre-stats{flex-direction:row;flex-wrap:wrap}
+      .stat-item{flex:1;min-width:120px}
+      .contacto-bottom{grid-template-columns:1fr}
+    }
+    @media(max-width:540px){
+      .menu-card-content{flex-direction:column;align-items:flex-start;gap:14px}
+      .menu-card-wa{width:100%;justify-content:center}
+      .hero-actions{flex-direction:column;align-items:center}
+      .hero-actions .btn{width:100%;max-width:340px}
+      .contacto-grid{grid-template-columns:1fr}
+    }
+    @media(max-width:480px){
+      .wa-float{bottom:20px;right:20px}
+      .wa-float-btn{width:50px;height:50px}
+      .wa-float-tip{display:none}
+    }
+
+    /* KEYFRAMES */
+    @keyframes fadeDown{from{opacity:0;transform:translateY(-18px)}to{opacity:1;transform:translateY(0)}}
+    @keyframes scrollPulse{0%,100%{opacity:.3;transform:scaleY(1)}50%{opacity:.85;transform:scaleY(1.12)}}
+    @keyframes waEntry{from{opacity:0;transform:scale(0) rotate(-45deg)}to{opacity:1;transform:scale(1) rotate(0)}}
+    @keyframes waPulse{0%{transform:scale(1);opacity:1}100%{transform:scale(1.8);opacity:0}}
+  </style>
+</head>
+<body>
+
+  <!-- NAVBAR -->
+  <nav id="navbar" role="navigation" aria-label="Navegacion principal">
+    <a href="#hero" class="nav-logo">Atr <span>Cordobesa</span> Kiosko</a>
+    <div class="nav-links">
+      <a href="#menu"     class="nav-btn nav-btn--outline">Menú</a>
+      <a href="#contacto" class="nav-btn nav-btn--red">Contacto</a>
+    </div>
+    <div class="nav-hamburger" id="hamburger" role="button" aria-label="Abrir menu" aria-expanded="false">
+      <span></span><span></span><span></span>
+    </div>
+  </nav>
+
+  <div class="nav-mobile-menu" id="mobile-menu" role="navigation" aria-label="Menu mobile">
+    <a href="#menu"     class="nav-btn nav-btn--outline" onclick="closeMobileMenu()">Menú</a>
+    <a href="#contacto" class="nav-btn nav-btn--red"     onclick="closeMobileMenu()">Contacto</a>
+  </div>
+
+
+  <!-- HERO -->
+  <section id="hero" aria-label="Portada principal">
+    <div class="hero-glow-a" aria-hidden="true"></div>
+    <div class="hero-glow-b" aria-hidden="true"></div>
+
+    <div class="hero-inner">
+      <div class="hero-badge">
+        <span class="badge-dot"></span>
+        Abierto las 24 horas
+      </div>
+
+      <h1 class="hero-title">
+        Atr <span class="acc">Cordobesa</span>
+        <span class="hero-sub-line">Kiosko de Barrio</span>
+      </h1>
+
+      <p class="hero-sub">Todo lo que necesitás, cuando lo necesitás</p>
+
+      <div class="hero-actions">
+        <a href="#menu"     class="btn btn--red">Ver el menú</a>
+        <a href="#contacto" class="btn btn--ghost">Contactarnos</a>
+      </div>
+    </div>
+
+    <div class="hero-scroll" aria-hidden="true">
+      <span class="hero-scroll-label">Scroll</span>
+      <div class="hero-scroll-line"></div>
+    </div>
+  </section>
+
+
+  <!-- PRODUCTOS -->
+  <section id="productos" aria-label="Productos del kiosco">
+    <div class="productos-header">
+      <div class="reveal">
+        <p class="section-label">Lo que vendemos</p>
+        <h2 class="section-title">Qué podés <em>encontrar</em></h2>
+        <div class="section-rule"></div>
+      </div>
+    </div>
+
+    <div class="productos-grid">
+      <div class="product-card reveal" style="transition-delay:.05s">
+        <div class="product-icon" aria-hidden="true"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="var(--gold)" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M8 2h8l1 6H7L8 2z"/><path d="M7 8c0 7 2 10 5 10s5-3 5-10"/><line x1="5" y1="11" x2="7" y2="11"/></svg></div>
+        <p class="product-name">Bebidas</p>
+        <p class="product-desc">Gaseosas, aguas, jugos, energizantes. Frías y a temperatura ambiente.</p>
+      </div>
+      <div class="product-card reveal" style="transition-delay:.1s">
+        <div class="product-icon" aria-hidden="true"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="var(--gold)" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="10" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg></div>
+        <p class="product-name">Snacks</p>
+        <p class="product-desc">Papas, palitos, maíces y todo tipo de bocados para cualquier momento.</p>
+      </div>
+      <div class="product-card reveal" style="transition-delay:.15s">
+        <div class="product-icon" aria-hidden="true"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="var(--gold)" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M8 14s1.5 2 4 2 4-2 4-2"/><line x1="9" y1="9" x2="9.01" y2="9"/><line x1="15" y1="9" x2="15.01" y2="9"/></svg></div>
+        <p class="product-name">Golosinas</p>
+        <p class="product-desc">Alfajores, caramelos, chicles, chocolates y todo lo dulce.</p>
+      </div>
+      <div class="product-card reveal" style="transition-delay:.2s">
+        <div class="product-icon" aria-hidden="true"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="var(--gold)" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><line x1="2" y1="15" x2="22" y2="15"/><line x1="2" y1="19" x2="22" y2="19"/><line x1="20" y1="11" x2="20" y2="15"/><path d="M16 11c0-4 4-4 4-8"/></svg></div>
+        <p class="product-name">Cigarrillos</p>
+        <p class="product-desc">Todas las marcas disponibles. Encendedores y accesorios.</p>
+      </div>
+      <div class="product-card reveal" style="transition-delay:.25s">
+        <div class="product-icon" aria-hidden="true"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="var(--gold)" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="2" width="14" height="20" rx="2"/><line x1="12" y1="18" x2="12.01" y2="18"/><path d="M9 7h6"/></svg></div>
+        <p class="product-name">Recargas</p>
+        <p class="product-desc">Saldo para todas las compañías. Rápido y sin complicaciones.</p>
+      </div>
+      <div class="product-card reveal" style="transition-delay:.3s">
+        <div class="product-icon" aria-hidden="true"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="var(--gold)" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/></svg></div>
+        <p class="product-name">Y mucho más</p>
+        <p class="product-desc">Pilas, velas, librería, limpieza y los esenciales del barrio.</p>
+      </div>
+    </div>
+  </section>
+
+
+  <!-- MENU -->
+  <section id="menu" aria-label="Menu de comidas">
+    <div class="menu-glow" aria-hidden="true"></div>
+    <div class="menu-layout">
+
+      <div class="menu-sidebar reveal">
+        <p class="section-label">Lista de platos</p>
+        <h2 class="section-title">Nuestro <em>Menú</em></h2>
+        <div class="section-rule"></div>
+        <div class="menu-hint">
+          <strong>Consultar precios</strong>
+          Tocá cualquier plato para ver la descripción y preguntarnos el precio por WhatsApp.
+        </div>
+      </div>
+
+      <div class="menu-list reveal" style="transition-delay:.15s">
+
+        <!-- WA SVG reutilizable definido como macro -->
+
+        <div class="menu-card">
+          <button class="menu-card-btn" onclick="toggleCard(this)" aria-expanded="false">
+            <span class="menu-card-num">01</span>
+            <span class="menu-card-name">Pollo al horno con papas</span>
+            <span class="menu-card-icon" aria-hidden="true"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg></span>
+          </button>
+          <div class="menu-card-body">
+            <div class="menu-card-content">
+              <p class="menu-card-desc">Pollo al horno dorado y jugoso, acompañado de papas blanditas. Un clásico casero que no falla.</p>
+              <a class="menu-card-wa" href="https://wa.me/5491134710000?text=Hola!%20Quisiera%20saber%20el%20precio%20del%20Pollo%20al%20horno%20con%20papas.%20Gracias!" target="_blank" rel="noopener noreferrer"><svg width="14" height="14" viewBox="0 0 24 24" fill="#fff"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/><path d="M12 0C5.373 0 0 5.373 0 12c0 2.123.554 4.118 1.528 5.845L.057 23.882a.5.5 0 0 0 .606.61l6.278-1.642A11.94 11.94 0 0 0 12 24c6.627 0 12-5.373 12-12S18.627 0 12 0zm0 21.818a9.79 9.79 0 0 1-5.007-1.374l-.36-.214-3.724.976.993-3.63-.234-.373A9.77 9.77 0 0 1 2.182 12C2.182 6.57 6.57 2.182 12 2.182S21.818 6.57 21.818 12 17.43 21.818 12 21.818z"/></svg>Preguntar precio</a>
+            </div>
+          </div>
+        </div>
+
+        <div class="menu-card">
+          <button class="menu-card-btn" onclick="toggleCard(this)" aria-expanded="false">
+            <span class="menu-card-num">02</span>
+            <span class="menu-card-name">Polenta con boloñesa</span>
+            <span class="menu-card-icon" aria-hidden="true"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg></span>
+          </button>
+          <div class="menu-card-body">
+            <div class="menu-card-content">
+              <p class="menu-card-desc">Polenta cremosa con una rica salsa boloñesa de carne. Reconfortante y bien servida.</p>
+              <a class="menu-card-wa" href="https://wa.me/5491134710000?text=Hola!%20Quisiera%20saber%20el%20precio%20de%20la%20Polenta%20con%20bolo%C3%B1esa.%20Gracias!" target="_blank" rel="noopener noreferrer"><svg width="14" height="14" viewBox="0 0 24 24" fill="#fff"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/><path d="M12 0C5.373 0 0 5.373 0 12c0 2.123.554 4.118 1.528 5.845L.057 23.882a.5.5 0 0 0 .606.61l6.278-1.642A11.94 11.94 0 0 0 12 24c6.627 0 12-5.373 12-12S18.627 0 12 0zm0 21.818a9.79 9.79 0 0 1-5.007-1.374l-.36-.214-3.724.976.993-3.63-.234-.373A9.77 9.77 0 0 1 2.182 12C2.182 6.57 6.57 2.182 12 2.182S21.818 6.57 21.818 12 17.43 21.818 12 21.818z"/></svg>Preguntar precio</a>
+            </div>
+          </div>
+        </div>
+
+        <div class="menu-card">
+          <button class="menu-card-btn" onclick="toggleCard(this)" aria-expanded="false">
+            <span class="menu-card-num">03</span>
+            <span class="menu-card-name">Marineras con puré de papas o ensalada</span>
+            <span class="menu-card-icon" aria-hidden="true"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg></span>
+          </button>
+          <div class="menu-card-body">
+            <div class="menu-card-content">
+              <p class="menu-card-desc">Marineras tiernas y sabrosas, a elección con puré de papas casero o ensalada fresca.</p>
+              <a class="menu-card-wa" href="https://wa.me/5491134710000?text=Hola!%20Quisiera%20saber%20el%20precio%20de%20las%20Marineras%20con%20pur%C3%A9%20o%20ensalada.%20Gracias!" target="_blank" rel="noopener noreferrer"><svg width="14" height="14" viewBox="0 0 24 24" fill="#fff"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/><path d="M12 0C5.373 0 0 5.373 0 12c0 2.123.554 4.118 1.528 5.845L.057 23.882a.5.5 0 0 0 .606.61l6.278-1.642A11.94 11.94 0 0 0 12 24c6.627 0 12-5.373 12-12S18.627 0 12 0zm0 21.818a9.79 9.79 0 0 1-5.007-1.374l-.36-.214-3.724.976.993-3.63-.234-.373A9.77 9.77 0 0 1 2.182 12C2.182 6.57 6.57 2.182 12 2.182S21.818 6.57 21.818 12 17.43 21.818 12 21.818z"/></svg>Preguntar precio</a>
+            </div>
+          </div>
+        </div>
+
+        <div class="menu-card">
+          <button class="menu-card-btn" onclick="toggleCard(this)" aria-expanded="false">
+            <span class="menu-card-num">04</span>
+            <span class="menu-card-name">Canelones con boloñesa, queso y pan</span>
+            <span class="menu-card-icon" aria-hidden="true"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg></span>
+          </button>
+          <div class="menu-card-body">
+            <div class="menu-card-content">
+              <p class="menu-card-desc">Canelones rellenos bañados en salsa boloñesa, gratinados con queso derretido y con pan.</p>
+              <a class="menu-card-wa" href="https://wa.me/5491134710000?text=Hola!%20Quisiera%20saber%20el%20precio%20de%20los%20Canelones%20con%20bolo%C3%B1esa%2C%20queso%20y%20pan.%20Gracias!" target="_blank" rel="noopener noreferrer"><svg width="14" height="14" viewBox="0 0 24 24" fill="#fff"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/><path d="M12 0C5.373 0 0 5.373 0 12c0 2.123.554 4.118 1.528 5.845L.057 23.882a.5.5 0 0 0 .606.61l6.278-1.642A11.94 11.94 0 0 0 12 24c6.627 0 12-5.373 12-12S18.627 0 12 0zm0 21.818a9.79 9.79 0 0 1-5.007-1.374l-.36-.214-3.724.976.993-3.63-.234-.373A9.77 9.77 0 0 1 2.182 12C2.182 6.57 6.57 2.182 12 2.182S21.818 6.57 21.818 12 17.43 21.818 12 21.818z"/></svg>Preguntar precio</a>
+            </div>
+          </div>
+        </div>
+
+        <div class="menu-card">
+          <button class="menu-card-btn" onclick="toggleCard(this)" aria-expanded="false">
+            <span class="menu-card-num">05</span>
+            <span class="menu-card-name">Albóndigas con puré o arroz</span>
+            <span class="menu-card-icon" aria-hidden="true"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg></span>
+          </button>
+          <div class="menu-card-body">
+            <div class="menu-card-content">
+              <p class="menu-card-desc">Albóndigas caseras en salsa, a elección con puré de papas cremoso o arroz blanco.</p>
+              <a class="menu-card-wa" href="https://wa.me/5491134710000?text=Hola!%20Quisiera%20saber%20el%20precio%20de%20las%20Alb%C3%B3ndigas%20con%20pur%C3%A9%20o%20arroz.%20Gracias!" target="_blank" rel="noopener noreferrer"><svg width="14" height="14" viewBox="0 0 24 24" fill="#fff"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/><path d="M12 0C5.373 0 0 5.373 0 12c0 2.123.554 4.118 1.528 5.845L.057 23.882a.5.5 0 0 0 .606.61l6.278-1.642A11.94 11.94 0 0 0 12 24c6.627 0 12-5.373 12-12S18.627 0 12 0zm0 21.818a9.79 9.79 0 0 1-5.007-1.374l-.36-.214-3.724.976.993-3.63-.234-.373A9.77 9.77 0 0 1 2.182 12C2.182 6.57 6.57 2.182 12 2.182S21.818 6.57 21.818 12 17.43 21.818 12 21.818z"/></svg>Preguntar precio</a>
+            </div>
+          </div>
+        </div>
+
+        <div class="menu-card">
+          <button class="menu-card-btn" onclick="toggleCard(this)" aria-expanded="false">
+            <span class="menu-card-num">06</span>
+            <span class="menu-card-name">Napolitana con papas</span>
+            <span class="menu-card-icon" aria-hidden="true"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg></span>
+          </button>
+          <div class="menu-card-body">
+            <div class="menu-card-content">
+              <p class="menu-card-desc">Milanesa napolitana con salsa de tomate y queso derretido, acompañada de papas al horno.</p>
+              <a class="menu-card-wa" href="https://wa.me/5491134710000?text=Hola!%20Quisiera%20saber%20el%20precio%20de%20la%20Napolitana%20con%20papas.%20Gracias!" target="_blank" rel="noopener noreferrer"><svg width="14" height="14" viewBox="0 0 24 24" fill="#fff"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/><path d="M12 0C5.373 0 0 5.373 0 12c0 2.123.554 4.118 1.528 5.845L.057 23.882a.5.5 0 0 0 .606.61l6.278-1.642A11.94 11.94 0 0 0 12 24c6.627 0 12-5.373 12-12S18.627 0 12 0zm0 21.818a9.79 9.79 0 0 1-5.007-1.374l-.36-.214-3.724.976.993-3.63-.234-.373A9.77 9.77 0 0 1 2.182 12C2.182 6.57 6.57 2.182 12 2.182S21.818 6.57 21.818 12 17.43 21.818 12 21.818z"/></svg>Preguntar precio</a>
+            </div>
+          </div>
+        </div>
+
+        <div class="menu-card">
+          <button class="menu-card-btn" onclick="toggleCard(this)" aria-expanded="false">
+            <span class="menu-card-num">07</span>
+            <span class="menu-card-name">Osabuco al vino blanco con puré</span>
+            <span class="menu-card-icon" aria-hidden="true"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg></span>
+          </button>
+          <div class="menu-card-body">
+            <div class="menu-card-content">
+              <p class="menu-card-desc">Osobuco braseado en vino blanco, tierno y lleno de sabor. Servido con puré de papas casero.</p>
+              <a class="menu-card-wa" href="https://wa.me/5491134710000?text=Hola!%20Quisiera%20saber%20el%20precio%20del%20Osabuco%20al%20vino%20blanco%20con%20pur%C3%A9.%20Gracias!" target="_blank" rel="noopener noreferrer"><svg width="14" height="14" viewBox="0 0 24 24" fill="#fff"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/><path d="M12 0C5.373 0 0 5.373 0 12c0 2.123.554 4.118 1.528 5.845L.057 23.882a.5.5 0 0 0 .606.61l6.278-1.642A11.94 11.94 0 0 0 12 24c6.627 0 12-5.373 12-12S18.627 0 12 0zm0 21.818a9.79 9.79 0 0 1-5.007-1.374l-.36-.214-3.724.976.993-3.63-.234-.373A9.77 9.77 0 0 1 2.182 12C2.182 6.57 6.57 2.182 12 2.182S21.818 6.57 21.818 12 17.43 21.818 12 21.818z"/></svg>Preguntar precio</a>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+
+  <!-- SOBRE -->
+  <section id="sobre" aria-label="Sobre el local">
+    <div class="sobre-inner">
+      <div class="reveal-left">
+        <p class="section-label">Quiénes somos</p>
+        <h2 class="section-title">El kiosco de <em>tu barrio</em></h2>
+        <div class="section-rule"></div>
+        <p class="sobre-text">Kiosco de barrio con atención rápida, gran variedad de productos y abierto las 24 horas para que encuentres todo lo que necesitás en cualquier momento.</p>
+        <div class="sobre-cta">
+          <a href="#contacto" class="btn btn--red">Contactanos</a>
+        </div>
+      </div>
+      <div class="sobre-stats reveal" style="transition-delay:.2s">
+        <div class="stat-item">
+          <p class="stat-num">24 hs</p>
+          <p class="stat-label">Todos los días del año</p>
+        </div>
+        <div class="stat-item">
+          <p class="stat-num">100+</p>
+          <p class="stat-label">Productos disponibles</p>
+        </div>
+        <div class="stat-item">
+          <p class="stat-num">1</p>
+          <p class="stat-label">Cuadra del centro</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+
+  <!-- CONTACTO -->
+  <section id="contacto" aria-label="Contacto y ubicacion">
+    <div class="contacto-header reveal">
+      <p class="section-label">Hablanos</p>
+      <h2 class="section-title">Contacto</h2>
+      <div class="section-rule"></div>
+    </div>
+
+    <div class="contacto-grid">
+      <a href="https://wa.me/5491134710000" target="_blank" rel="noopener noreferrer" class="contact-card contact-card--whatsapp reveal" style="transition-delay:.05s" aria-label="WhatsApp">
+        <div class="contact-icon" aria-hidden="true"><svg width="24" height="24" viewBox="0 0 24 24" fill="#fff"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/><path d="M12 0C5.373 0 0 5.373 0 12c0 2.123.554 4.118 1.528 5.845L.057 23.882a.5.5 0 0 0 .606.61l6.278-1.642A11.94 11.94 0 0 0 12 24c6.627 0 12-5.373 12-12S18.627 0 12 0zm0 21.818a9.79 9.79 0 0 1-5.007-1.374l-.36-.214-3.724.976.993-3.63-.234-.373A9.77 9.77 0 0 1 2.182 12C2.182 6.57 6.57 2.182 12 2.182S21.818 6.57 21.818 12 17.43 21.818 12 21.818z"/></svg></div>
+        <div class="contact-info"><p class="contact-label">WhatsApp</p><p class="contact-value">Escribinos ahora</p></div>
+      </a>
+      <a href="https://www.facebook.com/people/ATR-Cordobesa/100067579777532/#" target="_blank" rel="noopener noreferrer" class="contact-card contact-card--facebook reveal" style="transition-delay:.1s" aria-label="Facebook">
+        <div class="contact-icon" aria-hidden="true"><svg width="24" height="24" viewBox="0 0 24 24" fill="#fff"><path d="M24 12.073C24 5.405 18.627 0 12 0S0 5.405 0 12.073C0 18.1 4.388 23.094 10.125 24v-8.437H7.078v-3.49h3.047V9.41c0-3.025 1.791-4.697 4.533-4.697 1.313 0 2.686.236 2.686.236v2.971h-1.513c-1.491 0-1.956.93-1.956 1.886v2.267h3.328l-.532 3.49h-2.796V24C19.612 23.094 24 18.1 24 12.073z"/></svg></div>
+        <div class="contact-info"><p class="contact-label">Facebook</p><p class="contact-value">ATR Cordobesa</p></div>
+      </a>
+      <a href="mailto:castellanomarcela906@gmail.com" class="contact-card contact-card--email reveal" style="transition-delay:.15s" aria-label="Email">
+        <div class="contact-icon" aria-hidden="true"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="var(--cream)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="4" width="20" height="16" rx="2"/><polyline points="2,4 12,13 22,4"/></svg></div>
+        <div class="contact-info"><p class="contact-label">Email</p><p class="contact-value">castellanomarcela906@gmail.com</p></div>
+      </a>
+    </div>
+
+    <div class="contacto-bottom reveal" style="transition-delay:.2s">
+      <div class="mapa-wrap">
+        <div class="mapa-header">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="var(--gold)" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 10c0 7-9 13-9 13S3 17 3 10a9 9 0 1 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+          <span>Atr Cordobesa Kiosko 24 hs</span>
+        </div>
+        <div class="mapa-iframe-wrap">
+          <iframe title="Ubicacion Atr Cordobesa Kiosko" src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3275.4!2d-58.3482805!3d-34.7273372!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x95a32d9a25d14e9b%3A0x1541b81f432adce1!2sAtr%20Cordobesa%20Kiosko%2024%20Hs!5e0!3m2!1ses!2sar!4v1713200000000" width="100%" height="100%" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+        </div>
+        <a href="https://www.google.com/maps/place/Atr+Cordobesa+Kiosko+24+Hs/@-34.7273372,-58.3482805,17z" target="_blank" rel="noopener noreferrer" class="mapa-link">
+          Abrir en Google Maps
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+        </a>
+      </div>
+
+      <div class="wa-form-wrap">
+        <div class="wa-form-header">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="#25D366" aria-hidden="true"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/><path d="M12 0C5.373 0 0 5.373 0 12c0 2.123.554 4.118 1.528 5.845L.057 23.882a.5.5 0 0 0 .606.61l6.278-1.642A11.94 11.94 0 0 0 12 24c6.627 0 12-5.373 12-12S18.627 0 12 0zm0 21.818a9.79 9.79 0 0 1-5.007-1.374l-.36-.214-3.724.976.993-3.63-.234-.373A9.77 9.77 0 0 1 2.182 12C2.182 6.57 6.57 2.182 12 2.182S21.818 6.57 21.818 12 17.43 21.818 12 21.818z"/></svg>
+          <div>
+            <p class="wa-form-title">Envianos una consulta</p>
+            <p class="wa-form-sub">Te respondemos por WhatsApp</p>
+          </div>
+        </div>
+        <div class="wa-field-group">
+          <label class="wa-label" for="campo-nombre">Tu nombre</label>
+          <input id="campo-nombre" class="wa-input" type="text" placeholder="Ej: Maria" autocomplete="given-name" maxlength="60" />
+        </div>
+        <div class="wa-field-group">
+          <label class="wa-label" for="campo-consulta">Tu consulta</label>
+          <textarea id="campo-consulta" class="wa-input wa-textarea" placeholder="Ej: Venden fichas de luz?" maxlength="300" rows="4"></textarea>
+        </div>
+        <div class="wa-preview" id="wa-preview" aria-live="polite">
+          <p class="wa-preview-label">Vista previa</p>
+          <p class="wa-preview-text" id="wa-preview-text">Hola soy <em>nombre</em>. Tengo una consulta sobre <em>consulta</em>.</p>
+        </div>
+        <button class="wa-submit" id="wa-submit" type="button">
+          <svg width="17" height="17" viewBox="0 0 24 24" fill="#fff" aria-hidden="true"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/><path d="M12 0C5.373 0 0 5.373 0 12c0 2.123.554 4.118 1.528 5.845L.057 23.882a.5.5 0 0 0 .606.61l6.278-1.642A11.94 11.94 0 0 0 12 24c6.627 0 12-5.373 12-12S18.627 0 12 0zm0 21.818a9.79 9.79 0 0 1-5.007-1.374l-.36-.214-3.724.976.993-3.63-.234-.373A9.77 9.77 0 0 1 2.182 12C2.182 6.57 6.57 2.182 12 2.182S21.818 6.57 21.818 12 17.43 21.818 12 21.818z"/></svg>
+          Enviar por WhatsApp
+        </button>
+        <p class="wa-form-error" id="wa-error" role="alert"></p>
+      </div>
+    </div>
+  </section>
+
+
+  <!-- WA FLOAT -->
+  <a href="https://wa.me/5491134710000" target="_blank" rel="noopener noreferrer" class="wa-float" aria-label="Contactar por WhatsApp">
+    <span class="wa-float-tip">Escribinos</span>
+    <div class="wa-float-btn">
+      <svg width="28" height="28" viewBox="0 0 24 24" fill="#fff"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/><path d="M12 0C5.373 0 0 5.373 0 12c0 2.123.554 4.118 1.528 5.845L.057 23.882a.5.5 0 0 0 .606.61l6.278-1.642A11.94 11.94 0 0 0 12 24c6.627 0 12-5.373 12-12S18.627 0 12 0zm0 21.818a9.79 9.79 0 0 1-5.007-1.374l-.36-.214-3.724.976.993-3.63-.234-.373A9.77 9.77 0 0 1 2.182 12C2.182 6.57 6.57 2.182 12 2.182S21.818 6.57 21.818 12 17.43 21.818 12 21.818z"/></svg>
+    </div>
+  </a>
+
+
+  <!-- FOOTER -->
+  <footer role="contentinfo">
+    <strong>Atr Cordobesa Kiosko</strong> &nbsp;&mdash;&nbsp; Abierto <span class="footer-gold">24 hs</span>
+  </footer>
+
+
+  <script>
+    /* MENU ACCORDION */
+    function toggleCard(btn) {
+      var card = btn.closest('.menu-card');
+      var isOpen = card.classList.contains('open');
+      document.querySelectorAll('.menu-card.open').forEach(function(c) {
+        c.classList.remove('open');
+        c.querySelector('.menu-card-btn').setAttribute('aria-expanded','false');
+      });
+      if (!isOpen) { card.classList.add('open'); btn.setAttribute('aria-expanded','true'); }
+    }
+
+    /* NAVBAR */
+    const navbar = document.getElementById('navbar');
+    window.addEventListener('scroll', function(){ navbar.classList.toggle('scrolled', window.scrollY > 40); }, {passive:true});
+
+    /* HAMBURGER */
+    const hamburger = document.getElementById('hamburger');
+    const mobileMenu = document.getElementById('mobile-menu');
+    let menuOpen = false;
+    hamburger.addEventListener('click', function() {
+      menuOpen = !menuOpen;
+      mobileMenu.classList.toggle('open', menuOpen);
+      hamburger.setAttribute('aria-expanded', menuOpen);
+      const s = hamburger.querySelectorAll('span');
+      if (menuOpen) { s[0].style.transform='translateY(7px) rotate(45deg)'; s[1].style.opacity='0'; s[2].style.transform='translateY(-7px) rotate(-45deg)'; }
+      else { s[0].style.transform=s[1].style.opacity=s[2].style.transform=''; }
+    });
+    function closeMobileMenu() {
+      menuOpen=false; mobileMenu.classList.remove('open'); hamburger.setAttribute('aria-expanded','false');
+      const s=hamburger.querySelectorAll('span'); s[0].style.transform=s[1].style.opacity=s[2].style.transform='';
+    }
+    document.addEventListener('click', function(e) { if(menuOpen&&!navbar.contains(e.target)&&!mobileMenu.contains(e.target)) closeMobileMenu(); });
+
+    /* REVEAL */
+    const obs = new IntersectionObserver(function(entries){
+      entries.forEach(function(e){ if(e.isIntersecting){e.target.classList.add('visible');obs.unobserve(e.target);} });
+    },{threshold:.1,rootMargin:'0px 0px -40px 0px'});
+    document.querySelectorAll('.reveal,.reveal-left').forEach(function(el){obs.observe(el);});
+
+    /* WA FORM */
+    (function(){
+      var n=document.getElementById('campo-nombre'), c=document.getElementById('campo-consulta'),
+          pt=document.getElementById('wa-preview-text'), sb=document.getElementById('wa-submit'), er=document.getElementById('wa-error');
+      function esc(s){return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
+      function upd(){var nv=n.value.trim()||'nombre',cv=c.value.trim()||'consulta';pt.innerHTML='Hola soy <em>'+esc(nv)+'</em>. Tengo una consulta sobre <em>'+esc(cv)+'</em>.';}
+      n.addEventListener('input',function(){upd();er.textContent='';});
+      c.addEventListener('input',function(){upd();er.textContent='';});
+      sb.addEventListener('click',function(){
+        var nv=n.value.trim(),cv=c.value.trim();
+        if(!nv){er.textContent='Por favor ingresá tu nombre.';n.focus();return;}
+        if(!cv){er.textContent='Por favor escribí tu consulta.';c.focus();return;}
+        er.textContent='';
+        window.open('https://wa.me/5491134710000?text='+encodeURIComponent('Hola soy '+nv+'. Tengo una consulta sobre '+cv+'.'),'_blank','noopener,noreferrer');
+      });
+    })();
+  </script>
+</body>
+</html>
